@@ -33,4 +33,14 @@ class Php
 
         return $isPhp[$version];
     }
+
+    /**
+     * Is CLI?
+     * Test to see if a request was made from the command line.
+     * @return 	bool
+     */
+    public static function isCli()
+    {
+        return php_sapi_name() == 'cli';
+    }
 }
