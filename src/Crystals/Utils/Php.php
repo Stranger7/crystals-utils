@@ -22,7 +22,7 @@ class Php
      * @param	string
      * @return	bool	TRUE if the current version is $version or higher
      */
-    public static function requiredVersion($version)
+    public static function versionLeast($version)
     {
         static $isPhp;
         $version = (string) $version;
