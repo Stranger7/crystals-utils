@@ -160,6 +160,6 @@ class File
         }
         $dir = !empty($this->dir) ? rtrim($this->dir, '\\/') . DIRECTORY_SEPARATOR : '';
         $ext = !empty($this->ext) ? '.' . ltrim($this->ext, '.') : '';
-        $this->filename =  str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $dir . $this->name . $ext);
+        $this->filename = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $dir . $this->name . $ext);
     }
 }
