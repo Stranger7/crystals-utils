@@ -25,7 +25,7 @@ class File
      * @return resource
      * @throws Exception
      */
-    protected function open($mode)
+    public function open($mode)
     {
         if ($fp = @fopen($this->filename, $mode)) {
             throw new Exception("Can not open file $this->filename in specified mode");
