@@ -104,4 +104,12 @@ class File
     {
         return $this->filename;
     }
+
+    /**
+     * @return resource
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
 }
