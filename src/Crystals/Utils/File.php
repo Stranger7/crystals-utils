@@ -14,152 +14,76 @@ namespace Crystals\Utils;
  */
 class File
 {
-    const PHP_EXT = '.php';
-
     /**
      * @var string
      */
-    private $dir;
+    protected $filename = '';
 
     /**
-     * @var string
+     * Open log file
+     * @param string $mode
+     * @return resource
+     * @throws Exception
      */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $ext = self::PHP_EXT;
-
-    /**
-     * @var string
-     */
-    private $filename;
-
-    /**
-     * @param string $dir
-     * @return File
-     */
-    public function setDir($dir)
+    protected function open($mode)
     {
-        $this->clearFilename();
-        $this->dir = $dir;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDir()
-    {
-        return $this->dir;
-    }
-
-    /**
-     * @param string $name
-     * @return File
-     */
-    public function setName($name)
-    {
-        $this->clearFilename();
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $ext
-     * @return File
-     */
-    public function setExt($ext)
-    {
-        $this->clearFilename();
-        $this->ext = $ext;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExt()
-    {
-        return $this->ext;
-    }
-
-    /**
-     * Make filename
-     *
-     * @return string
-     * @throws FileException
-     */
-    public function getFilename()
-    {
-        if (empty($this->filename)) {
-            $this->makeFilename();
+        if ($fp = @fopen($this->filename, $mode)) {
+            throw new Exception("Can not open file $this->filename in specified mode");
         }
-        return $this->filename;
+        return $fp;
     }
 
     /**
+     * @param string $filename
+     * @return $this
+     * @throws Exception
+     */
+    public function setFilename($filename)
+    {
+        $realPath = realpath($filename);
+        if (empty($realPath)) {
+            throw new Exception("File name not specified or invalid");
+        }
+        $this->filename = $realPath;
+        return $this;
+    }
+
+    /**
+     * Checking file existence
+     *
      * @return bool
-     * @throws FileException
+     * @throws Exception
      */
     public function exist()
     {
-        return is_file($this->getFilename());
+        return is_file($this->filename);
     }
 
     /**
+     * Checking ability file to write
+     *
      * @return bool
-     * @throws FileException
      */
-    public function readable()
+    public function isWritable()
     {
-        return is_readable($this->getFilename());
+        return is_writable($this->filename);
     }
 
     /**
-     * @param bool|false $required
-     * @param bool|true $once
-     * @return bool|mixed
-     * @throws FileException
+     * Checking file reading
+     *
+     * @return bool
      */
-    public function load($required = false, $once = true)
+    public function isReadable()
     {
-        $this->makeFilename();
-        $readable = $this->readable();
-        if ($required) {
-            if (!$readable) {
-                throw new FileException("File `{$this->filename}` not found or not readable");
-            }
-            return ($once) ? require_once $this->filename : require $this->filename;
-        } else {
-            if (!$readable) {
-                return false;
-            }
-            return ($once) ? include_once $this->filename : include $this->filename;
-        }
+        return is_readable($this->filename);
     }
 
-    protected function clearFilename()
+    /**
+     * @return string
+     */
+    public function getFilename()
     {
-        $this->filename = '';
-    }
-
-    protected function makeFilename()
-    {
-        if (empty($this->name)) {
-            throw new FileException('Name of file not specified');
-        }
-        $dir = !empty($this->dir) ? rtrim($this->dir, '\\/') . DIRECTORY_SEPARATOR : '';
-        $ext = !empty($this->ext) ? '.' . ltrim($this->ext, '.') : '';
-        $this->filename = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $dir . $this->name . $ext);
+        return $this->filename;
     }
 }

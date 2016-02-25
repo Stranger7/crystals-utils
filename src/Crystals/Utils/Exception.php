@@ -12,7 +12,6 @@ namespace Crystals\Utils;
  * Class FileException
  * @package Crystals\Utils
  */
-class FileException extends \Exception
+class Exception extends \Exception
 {
-
 }
