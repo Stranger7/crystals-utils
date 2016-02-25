@@ -20,17 +20,35 @@ class File
     protected $filename = '';
 
     /**
+     * @var resource
+     */
+    protected $resource;
+
+    /**
      * Open log file
      * @param string $mode
+     * @param int $permission
      * @return resource
      * @throws Exception
      */
-    public function open($mode)
+    public function open($mode, $permission = null)
     {
-        if ($fp = @fopen($this->filename, $mode)) {
+        if ($this->resource = @fopen($this->filename, $mode)) {
             throw new Exception("Can not open file $this->filename in specified mode");
         }
-        return $fp;
+        if ($permission !== null) {
+            @chmod($this->filename, $permission);
+        }
+        return $this->resource;
+    }
+
+    /**
+     * Close file
+     */
+    public function close()
+    {
+        @fclose($this->resource);
+        $this->resource = null;
     }
 
     /**
